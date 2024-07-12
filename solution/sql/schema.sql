@@ -1,7 +1,7 @@
 -- Create the domain table
 CREATE TABLE domain (
     id SERIAL PRIMARY KEY,
-    domain_name VARCHAR(255) NOT NULL,
+    domain_name VARCHAR(255) NOT NULL CHECK(domain_name ~ '^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$'),
     registered_at TIMESTAMP NOT NULL,
     unregistered_at TIMESTAMP,
     CONSTRAINT valid_time_interval CHECK((unregistered_at IS NULL) OR (registered_at <= unregistered_at))
