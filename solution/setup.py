@@ -8,6 +8,7 @@ setup(
         'grpcio',
         'grpcio-tools',
         'protobuf',
+        'requests',
     ],
     entry_points={
         'console_scripts': [
