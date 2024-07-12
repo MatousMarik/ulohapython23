@@ -39,3 +39,7 @@ class GrpcClient(Client):
         return {
             'content': content,
         }
+
+
+class RestClient(Client):
+    pass

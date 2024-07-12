@@ -1,5 +1,5 @@
 import argparse
-from file_client.clients import GrpcClient
+from file_client.clients import GrpcClient, RestClient
 
 
 def main():
@@ -17,6 +17,11 @@ def main():
                         help='Set the file where to store the output. Default is -, i.e. the stdout.')
 
     args = parser.parse_args()
+
+    if args.backend == 'grpc':
+        client = GrpcClient(args.grpc_server)
+    else:
+        client = RestClient(args.base_url)
 
 
 if __name__ == '__main__':
