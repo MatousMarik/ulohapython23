@@ -1,5 +1,6 @@
 import argparse
 from file_client.clients import GrpcClient, RestClient
+from file_client.utils import output_result, format_metadata, format_content
 
 
 def main():
@@ -22,6 +23,20 @@ def main():
         client = GrpcClient(args.grpc_server)
     else:
         client = RestClient(args.base_url)
+
+    if args.backend == 'grpc':
+        client = GrpcClient(args.grpc_server)
+    else:
+        client = RestClient(args.base_url)
+
+    if args.command == 'stat':
+        result = client.get_file_metadata(args.uuid)
+        formatted_result = format_metadata(result)
+    elif args.command == 'read':
+        result = client.get_file_content(args.uuid)
+        formatted_result = format_content(result)
+
+    output_result(formatted_result, args.output)
 
 
 if __name__ == '__main__':
