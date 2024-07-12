@@ -17,19 +17,19 @@ CREATE OR REPLACE FUNCTION check_unique_active_domain()
     AS
 $$
 DECLARE
-    overlap_found BOOLEAN;
+    overlapping_domain VARCHAR(255);
 BEGIN
-    overlap_found := EXISTS (
-        SELECT 1
+    overlapping_domain := (
+        SELECT domain_name
         FROM domain d
         WHERE d.domain_name = NEW.domain_name
-        AND NEW.id <> d.id  -- avoid update self block
         AND tsrange(NEW.registered_at, COALESCE(NEW.unregistered_at, 'infinity'::timestamp)) && 
             tsrange(d.registered_at, COALESCE(d.unregistered_at, 'infinity'::timestamp))
+        AND NEW.id <> d.id
+        LIMIT 1
     );
-
-    IF overlap_found THEN
-        RAISE EXCEPTION 'Overlapping active domains not allowed';
+    IF overlapping_domain IS NOT NULL THEN
+        RAISE EXCEPTION 'Overlapping active domain "%"', overlapping_domain;
     END IF;
 
     RETURN NEW;
