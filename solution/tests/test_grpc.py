@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from google.protobuf.timestamp_pb2 import Timestamp
+from grpc import RpcError, StatusCode
 from file_client.clients import GrpcClient
 
 
@@ -31,6 +32,13 @@ class TestGrpcClient(unittest.TestCase):
 
         response = client.get_content('123')
         self.assertEqual(response['content'], b'file content')
+
+    @patch('file_client.clients.FileStub')
+    def test_get_metadata_invalid(self, mock_stub):
+        client = GrpcClient('localhost:50051')
+        mock_stub.return_value.stat.side_effect = RpcError()
+        with self.assertRaises(RpcError):
+            client.get_metadata('invalid-uuid')
 
 
 if __name__ == '__main__':
