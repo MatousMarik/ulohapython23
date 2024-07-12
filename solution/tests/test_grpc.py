@@ -22,6 +22,16 @@ class TestGrpcClient(unittest.TestCase):
         self.assertEqual(response['mimetype'], 'text/plain')
         self.assertEqual(response['name'], 'example.txt')
 
+    @patch('file_client.clients.FileStub')
+    def test_get_content(self, mock_stub):
+        client = GrpcClient('localhost:50051')
+        mock_chunk = MagicMock()
+        mock_chunk.data.data = b'file content'
+        mock_stub.return_value.read.return_value = iter([mock_chunk])
+
+        response = client.get_content('123')
+        self.assertEqual(response['content'], b'file content')
+
 
 if __name__ == '__main__':
     unittest.main()
