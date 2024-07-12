@@ -28,6 +28,14 @@ WHERE domain_name = 'example';
 
 INSERT INTO domain_flag (domain_id, flag, start_time, end_time) VALUES
 (1, 'EXPIRED', '2023-01-01 00:00:00', '2023-01-10 00:00:00'),
+(4, 'OUTZONE', '2023-01-01 00:00:00', '2023-01-10 00:00:00'),
 (2, 'OUTZONE', '2023-02-01 00:00:00', '2023-02-15 00:00:00'),
-(2, 'EXPIRED', '2023-02-10 00:00:00', '2023-02-20 00:00:00'),
+(2, 'EXPIRED', '2023-02-10 00:00:00', NULL),
+(2, 'EXPIRED', '2023-03-10 00:00:00', NULL),
 (3, 'OUTZONE', '2023-03-01 00:00:00', '2023-03-15 00:00:00');
+
+/* invalid
+update domain_flag
+set start_time = '2025-02-10 00:00:00'
+where id = 4;
+*/

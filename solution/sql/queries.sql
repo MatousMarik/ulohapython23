@@ -16,10 +16,26 @@ WHERE d.registered_at < now()
     );
 
 -- Domains, that had EXPIRED and OUTZONE flags. For simplicity I assume host www and TLD cz
-SELECT DISTINCT 'www.' || d.domain_name || '.cz' as fully_qualified_domain_name
-FROM domain d
-JOIN domain_flag fe ON d.id = fe.domain_id AND fe.flag = 'EXPIRED'
-JOIN domain_flag fo ON d.id = fo.domain_id AND fo.flag = 'OUTZONE'
-WHERE COALESCE(fe.end_time, 'infinity'::timestamp) < now()
-AND COALESCE(fo.end_time, 'infinity'::timestamp) < now()
-GROUP BY d.domain_name;
+WITH domain_ids AS (
+  SELECT domain_name, ARRAY_AGG(id) AS ids
+  FROM domain
+  GROUP BY domain_name
+)
+SELECT 'www.' || domain_name || '.cz' as fully_qualified_domain_name
+FROM domain_ids
+WHERE EXISTS (
+        SELECT 1
+        FROM domain_flag fe
+        WHERE fe.domain_id = ANY(ids)
+            AND fe.flag = 'EXPIRED'
+            AND fe.end_time IS NOT NULL -- has to be in the past
+            AND fe.end_time < now()
+            AND EXISTS (
+                SELECT 1
+                FROM domain_flag fo
+                WHERE fo.domain_id = ANY(ids)
+                    AND fo.flag = 'OUTZONE'
+                    AND fo.end_time IS NOT NULL -- has to be in the past
+                    AND fo.end_time < now()
+            )
+    );
