@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import service_file_pb2 as service__file__pb2
+import file_client.service_file_pb2 as service__file__pb2
 
 GRPC_GENERATED_VERSION = '1.64.1'
 GRPC_VERSION = grpc.__version__
@@ -13,7 +13,8 @@ _version_not_supported = False
 
 try:
     from grpc._utilities import first_version_is_lower
-    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)
+    _version_not_supported = first_version_is_lower(
+        GRPC_VERSION, GRPC_GENERATED_VERSION)
 except ImportError:
     _version_not_supported = True
 
@@ -40,15 +41,15 @@ class FileStub(object):
             channel: A grpc.Channel.
         """
         self.stat = channel.unary_unary(
-                '/File/stat',
-                request_serializer=service__file__pb2.StatRequest.SerializeToString,
-                response_deserializer=service__file__pb2.StatReply.FromString,
-                _registered_method=True)
+            '/File/stat',
+            request_serializer=service__file__pb2.StatRequest.SerializeToString,
+            response_deserializer=service__file__pb2.StatReply.FromString,
+            _registered_method=True)
         self.read = channel.unary_stream(
-                '/File/read',
-                request_serializer=service__file__pb2.ReadRequest.SerializeToString,
-                response_deserializer=service__file__pb2.ReadReply.FromString,
-                _registered_method=True)
+            '/File/read',
+            request_serializer=service__file__pb2.ReadRequest.SerializeToString,
+            response_deserializer=service__file__pb2.ReadReply.FromString,
+            _registered_method=True)
 
 
 class FileServicer(object):
@@ -79,38 +80,39 @@ class FileServicer(object):
 
 def add_FileServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'stat': grpc.unary_unary_rpc_method_handler(
-                    servicer.stat,
-                    request_deserializer=service__file__pb2.StatRequest.FromString,
-                    response_serializer=service__file__pb2.StatReply.SerializeToString,
-            ),
-            'read': grpc.unary_stream_rpc_method_handler(
-                    servicer.read,
-                    request_deserializer=service__file__pb2.ReadRequest.FromString,
-                    response_serializer=service__file__pb2.ReadReply.SerializeToString,
-            ),
+        'stat': grpc.unary_unary_rpc_method_handler(
+            servicer.stat,
+            request_deserializer=service__file__pb2.StatRequest.FromString,
+            response_serializer=service__file__pb2.StatReply.SerializeToString,
+        ),
+        'read': grpc.unary_stream_rpc_method_handler(
+            servicer.read,
+            request_deserializer=service__file__pb2.ReadRequest.FromString,
+            response_serializer=service__file__pb2.ReadReply.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'File', rpc_method_handlers)
+        'File', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
     server.add_registered_method_handlers('File', rpc_method_handlers)
 
-
  # This class is part of an EXPERIMENTAL API.
+
+
 class File(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def stat(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+             target,
+             options=(),
+             channel_credentials=None,
+             call_credentials=None,
+             insecure=False,
+             compression=None,
+             wait_for_ready=None,
+             timeout=None,
+             metadata=None):
         return grpc.experimental.unary_unary(
             request,
             target,
@@ -129,15 +131,15 @@ class File(object):
 
     @staticmethod
     def read(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
+             target,
+             options=(),
+             channel_credentials=None,
+             call_credentials=None,
+             insecure=False,
+             compression=None,
+             wait_for_ready=None,
+             timeout=None,
+             metadata=None):
         return grpc.experimental.unary_stream(
             request,
             target,
