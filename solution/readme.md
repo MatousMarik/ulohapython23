@@ -1,5 +1,7 @@
 Solution for sql task is in sql directory, the rest is for python task.
 
+Since the solution is really straightforward documentation is omitted.
+
 To run the solution use commands bellow:
 
 - install requirements by:
