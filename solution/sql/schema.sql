@@ -87,3 +87,5 @@ CREATE TRIGGER forbid_flag_modification
     BEFORE UPDATE ON domain_flag
     FOR EACH ROW
     EXECUTE FUNCTION forbid_flag_column_update_only_upper_limit();
+
+-- It might also be fruitful to check whether flags are active only during domain active registration.
