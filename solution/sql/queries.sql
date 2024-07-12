@@ -2,7 +2,7 @@
 -- and might be flattened into JOIN anyway.
 
 -- Registered, not expired domains. For simplicity I assume host www and TLD cz
-SELECT domain_name
+SELECT 'www.' || d.domain_name || '.cz' as fully_qualified_domain_name
 FROM domain d
 WHERE d.registered_at < now()
     AND COALESCE(d.unregistered_at, 'infinity'::timestamp) > now()
